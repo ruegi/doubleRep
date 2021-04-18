@@ -1,0 +1,6 @@
+*.txt
+*.csv
+*.ods
+*.sav
+.vs/
+.vscode/
