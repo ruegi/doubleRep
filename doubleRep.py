@@ -5,7 +5,9 @@ Created on 2021-02-17
 doubleRep.py
 Sucht Film-Doubletten
 
-Version 1 :  rg 2021-02-17
+Version 1 :     rg 2021-02-17
+        1.1:    rg 2021-04-18
+                *_cut im dateinamen ignoriert
 '''
 
 import sys
@@ -97,10 +99,13 @@ def zerlegeName(full, name):
     fext = fext[1:] 
     return fname, fext
 
-def normalize_f(f: str):
+def normalize_f(f: str) -> str:
+    # mit normalize werden Dateinamen vereinfacht, um sie vergleichen zu können
     f1 = f.replace("_-_", " ")
     f1 = f1.replace("_", " ")
     f1 = f1.replace(" - ", " ")
+    f1 = f1.replace("_cut", "")
+    f1 = f1.replace("  ", " ")
     return(f1)
 
 def finde_doublette(vidName, FilmListe):
