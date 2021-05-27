@@ -35,6 +35,8 @@ verfügbare Methoden:
                                     Die Liste steht anschlißend auf dem 1. Satz
     findAll("Attribut", "Wert") Liefert eine Liste der Indizes aller Sätze, die im Attribut den Wert stehen haben
                                     Die Liste steht anschlißend auf dem 1. Satz
+
+    zap()                       Löscht die enthaltene Liste und setzt alle Verwaltungsvariablen zurück
 """
 
 class liste():
@@ -177,6 +179,16 @@ class liste():
                 if d == wert:
                     erglst.append(i)    # Treffer
         return erglst
+
+    def zap(self):
+        # löscht die Liste und alle Verwaltungsvariablen
+        #         
+        self.liste = []
+        self.size = 0
+        self.lastPos = -1
+        self.lastObj = None
+
+
 
 if __name__ == '__main__': 
     class Beispiel():

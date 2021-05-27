@@ -2,5 +2,11 @@
 *.csv
 *.ods
 *.sav
+*.exe
+*.json
 .vs/
 .vscode/
+.dist/
+.doubleRep.build.x/
+.build/
+

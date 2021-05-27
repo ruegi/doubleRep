@@ -1,4 +1,4 @@
-txt = ["Blablabla", "", None]
+txt = ["Blablabla", "", None,"ein Text"]
 
 i = -1
 for t in txt:

@@ -8,6 +8,9 @@ Sucht Film-Doubletten
 Version 1 :     rg 2021-02-17
         1.1:    rg 2021-04-18
                 *_cut im dateinamen ignoriert
+Erstelle eine Liste der Doubletten im VideoOrdner als Text-Datei und als CSV-Datei
+Parameter:  "simple"    - Dateiname nur doubleRep.csv oder doubleRep.txt
+
 '''
 
 import sys
@@ -30,7 +33,7 @@ ANSI = {
 
 class const():
     vpath = "Y:\\video\\"
-    skipExt = ["vdr", "conf", "py", "txt", "idx", "", "mp2", "BUP", "IFO", "VOB", ".", "DS Store"]
+    skipExt = ["vdr", "conf", "py", "txt", "idx", "", "mp2", "BUP", "IFO", "VOB", ".", "DS Store", "srt"]
 
 class dirInhalt():
     """
@@ -126,23 +129,21 @@ def finde_doublette(vidName, FilmListe):
             obj.setFertig()          # dID, lfd, FilmName, FilmExt, FullPath
     return lfd
 
-def dbl_Ausgabe(dbl, DateiName="doubleRep"):
+def dbl_Ausgabe(dbl, DateiName, now):
     # gibt den Inhalt der Doubletten-Liste sowohl als Txt-Datei als auch als CSV aus
     # Parameter:
     #   dbl:        Liste der Doubletten
-    #   Dateiname:  opt.: Name der Ausgabedatei
-    #   csv:        opt.: wenn True, dann als csv ausgeben    
+    #   Dateiname:  Name der Ausgabedatei ohne Extension    
 
-    now = f"{datetime.datetime.now():%Y-%m-%d_%H-%M}"
-    with open(DateiName + f"-{now}.csv", 'w') as f:
+    with open(DateiName + ".csv", 'w', encoding="utf-8") as f:
         print(f"Doubletten-Suche vom {now}", file=f)
         for d in dbl.liste:
             print(f"{d.dID};{d.lfd};{d.FilmName};{d.FilmExt};{d.FullPath}",file=f)       # dID, lfd, FilmName, FilmExt, FullPath
 
-    with open(DateiName + f"-{now}.txt", 'w') as f:
+    with open(DateiName + ".txt", 'w', encoding="utf-8") as f:
         print(f"Doubletten-Suche vom {now}", file=f)
         nr = -1
-        o = fl.findFirst()
+        o = dbl.findFirst()
         while not o is None:
             if not o.dID == nr:
                 # erste Doublette            
@@ -150,14 +151,12 @@ def dbl_Ausgabe(dbl, DateiName="doubleRep"):
                 print(" ", file=f)
                 print("-"*120, file=f)
             print(f"{o.dID:4} {o.FilmName:20}   -  {o.FilmExt:5}  -  {o.FullPath}", file=f)
-            o = fl.findNext()
+            o = dbl.findNext()
 
-
-if __name__ == '__main__':
-    os.system('')   # magic Call to enable ANSi-Seq.
+def main(simple):
     # StartMessage
     print(ANSI["BLUE"] + "=" * 80)
-    print("doubleRep.py: Doubletten in y:\\Video finden")
+    print(f"doubleRep.py: Doubletten in {const.vpath} finden")
     print(ANSI["BLUE"] + "=" * 80)
     print("rg, 02.2021" + " "*65 + "V1.1" + ANSI["ENDC"])
 
@@ -166,8 +165,6 @@ if __name__ == '__main__':
     Inhalte_vorladen(const.vpath)    # videodir ist eine Liste der Videofiles
 
     print(ANSI["ENDC"] + f"{videodir.size} Dateien vorgeladen!" + ANSI["ENDC"])
-
-   # exit(0)
 
     fl = liste.liste()
     doubleNr = 0
@@ -188,9 +185,26 @@ if __name__ == '__main__':
 
     # exit()
 
-    # Ausgabe der Ergebnisse
-    dbl_Ausgabe(fl)
+    # Ausgabe der Ergebnisse    
+    now = f"{datetime.datetime.now():%Y-%m-%d_%H-%M}"
+    if simple:
+        DateiName = "doubleRep"
+    else:
+        DateiName = "doubleRep" + f"-{now}"
+
+    dbl_Ausgabe(fl, DateiName, now)
     print("OK")
 
+
+if __name__ == '__main__':
+    os.system('')   # magic Call to enable ANSi-Seq.
+
+    simple = False
+    if len(sys.argv) > 1:
+        if sys.argv[1].lower() == "simple":
+            simple = True        
+    main(simple)
+
+    
 
 
